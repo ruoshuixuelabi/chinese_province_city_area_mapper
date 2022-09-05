@@ -21,7 +21,8 @@ def assert_addr(addr_df: pd.DataFrame, pos_sensitive=False):
                  "320812", 6, 8, 10)
     _assert_line(addr_df, pos_sensitive, 5, "江苏省", "淮安市", "清江浦区", "上海路111号", "320812", 6, 8, 10)
     _assert_line(addr_df, pos_sensitive, 6, "上海市", "市辖区", "浦东新区", "东明路街道三林路15号", "310115", 0, -1, 3)
-    _assert_line(addr_df, pos_sensitive, 7, "贵州省", "黔南布依族苗族自治州", "长顺县", "长寨街道和平中路28号", "522729", 0, 3, 13)
+    _assert_line(addr_df, pos_sensitive, 7, "贵州省", "黔南布依族苗族自治州", "长顺县", "长寨街道和平中路28号",
+                 "522729", 0, 3, 13)
     _assert_line(addr_df, pos_sensitive, 8, "宁夏回族自治区", None, None, "", "640000", 0, -1, -1)
     _assert_line(addr_df, pos_sensitive, 9, "江苏省", "淮安市", "市辖区", "", "320801", -1, 0, 3)
     _assert_line(addr_df, pos_sensitive, 10, None, None, None, None, None, -1, -1, -1)
@@ -39,6 +40,7 @@ def test_transform():
                  # 测试错误数据
                  32323]
     transed = cpca.transform(addr_list)
+    print(transed)
     assert_addr(transed)
 
     # 测试pos_sensitive
@@ -77,7 +79,7 @@ def test_transform_text_with_addrs():
     _assert_line(addr_df, True, 1, "福建省", "泉州市", "洛江区", "", "350504", -1, 21, 24)
 
 
-def mock_map(monkeypatch, attrname, return_value, is_contain = True, is_unique_value = True):
+def mock_map(monkeypatch, attrname, return_value, is_contain=True, is_unique_value=True):
     mock_map = MagicMock()
     mock_map.__contains__.return_value = is_contain
     mock_map.get_value.return_value = return_value
@@ -86,10 +88,10 @@ def mock_map(monkeypatch, attrname, return_value, is_contain = True, is_unique_v
     return mock_map
 
 
-def _dict2addr_map(mydict, valuedict = {}, is_unique_value = True):
+def _dict2addr_map(mydict, valuedict={}, is_unique_value=True):
     mock_map = MagicMock()
 
-    mock_map.get_full_name.side_effect  = lambda key: mydict[key]
+    mock_map.get_full_name.side_effect = lambda key: mydict[key]
     mock_map.get_value.side_effect = lambda key, pca: valuedict[key]
 
     mock_map.__contains__.side_effect = lambda key: key in mydict
